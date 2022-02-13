@@ -39,8 +39,8 @@ void player_move(char board[3][3], char player) {
 	int row, col;
 	printf("Player %c move: ", player);
 	scanf("%d %d", &row, &col);
-	while (row > 3 || row < 1 || col>3 || col < 1||board[row-1][col-1]!=' ') {
-		printf("Invalid move Player %c move: ",player);
+	while (row > 3 || row < 1 || col>3 || col < 1 || board[row - 1][col - 1] != ' ') {
+		printf("Invalid move Player %c move: ", player);
 		scanf("%d %d", &row, &col);
 	}
 	board[row - 1][col - 1] = player;
@@ -57,6 +57,7 @@ void player_vs_player() {
 		player1 = choose();
 		player2 = (player1 == 'X') ? 'O' : 'X';
 		count_moves = 0;
+		print_board(board);
 		while (1) {
 			printf("Player 1\n");
 			player_move(board, player1);
@@ -83,7 +84,7 @@ void player_vs_player() {
 		scanf("%d", &again);
 	} while (again == 1);
 }
-void computer_move_easy(char board[3][3],char computer) {
+void computer_move_easy(char board[3][3], char computer) {
 	int row, col;
 	do {
 		row = rand() % 3;
@@ -116,6 +117,7 @@ void player_vs_computer_easy() {
 		player = choose();
 		computer = (player == 'X') ? 'O' : 'X';
 		count_moves = 0;
+		print_board(board);
 		while (1) {
 			printf("Player\n");
 			player_move(board, player);
@@ -145,7 +147,7 @@ void player_vs_computer_easy() {
 	} while (again == 1);
 }
 int connect_3_computer(char board[3][3], char computer) {
-	int i, r,j,count;
+	int i, r, j, count;
 	char player;
 	for (i = 0; i < 3; i++)
 		for (r = 0; r < 3; r++)
@@ -168,7 +170,7 @@ int connect_3_computer(char board[3][3], char computer) {
 				}
 			}
 	for (i = 0; i < 3; i++)
-		if (board[i][i] == ' ') 
+		if (board[i][i] == ' ')
 			if ((board[0][0] == computer) + (board[1][1] == computer) + (board[2][2] == computer) == 2) {
 				board[i][i] = computer;
 				return 1;
@@ -230,6 +232,7 @@ void player_vs_computer_medium() {
 		player = choose();
 		computer = (player == 'X') ? 'O' : 'X';
 		count_moves = 0;
+		print_board(board);
 		while (1) {
 			printf("Player\n");
 			player_move(board, player);
@@ -258,7 +261,7 @@ void player_vs_computer_medium() {
 		scanf("%d", &again);
 	} while (again == 1);
 }
-void computer_move_imposible(char board[3][3],char computer,int *first_move,int *second_move) {
+void computer_move_imposible(char board[3][3], char computer, int* first_move, int* second_move) {
 	int i, r;
 	int rows[] = { 0,1,1,2 };
 	int cols[] = { 1,0,2,1 };
@@ -268,17 +271,20 @@ void computer_move_imposible(char board[3][3],char computer,int *first_move,int 
 	if (*first_move) {
 		if (board[1][1] == ' ') {
 			board[1][1] = computer;
-		}else {
+		}
+		else {
 			i = rand() % 4;
 			board[rows2[i]][cols2[i]] = computer;
 		}
 		*first_move = 0;
-	}else if (*second_move) {
+	}
+	else if (*second_move) {
 		if (connect_3_computer(board, computer) == 0) {
 			if (board[0][0] == player && board[2][2] == player || board[0][2] == player && board[2][0] == player) {
 				i = rand() % 4;
 				board[rows[i]][cols[i]] = computer;
-			}else {
+			}
+			else {
 				do {
 					i = rand() % 4;
 				} while (board[rows2[i]][cols2[i]] != ' ');
@@ -286,7 +292,8 @@ void computer_move_imposible(char board[3][3],char computer,int *first_move,int 
 			}
 		}
 		*second_move = 0;
-	}else
+	}
+	else
 		computer_move_medium(board, computer);
 }
 void player_vs_computer_imposible() {
@@ -305,6 +312,7 @@ void player_vs_computer_imposible() {
 		count_moves = 0;
 		first_move = 1;
 		second_move = 1;
+		print_board(board);
 		while (1) {
 			printf("Player\n");
 			player_move(board, player);
@@ -321,7 +329,7 @@ void player_vs_computer_imposible() {
 			printf("Computer move: ");
 			delay_dots(2000);
 			putchar('\n');
-			computer_move_imposible(board, computer,&first_move,&second_move);
+			computer_move_imposible(board, computer, &first_move, &second_move);
 			print_board(board);
 			if (check_win(board)) {
 				printf("Computer %c WIN\n", computer);
@@ -335,41 +343,41 @@ void player_vs_computer_imposible() {
 }
 void run() {
 	srand(time(NULL));
-	int ch,ch2;
+	int ch, ch2;
 	do {
 		puts("Tic Tac Toe");
 		puts("To play you need to enter row and col from 1-3 like \"1 1\"");
 		puts("Enter 1 = Player vs Player \nEnter 2 = Player vs Computer\nEnter Other = Exit");
 		scanf("%d", &ch);
 		switch (ch) {
-			case 1:
-				player_vs_player();
-				break;
-			case 2:
-				do {
-					puts("Enter 1 = Easy");
-					puts("Enter 2 = Medium");
-					puts("Enter 3 = IMPOSIBLE");
-					puts("Enter Other = Back");
-					scanf("%d", &ch2);
-					switch (ch2) {
-						case 1:
-							player_vs_computer_easy();
-							break;
-						case 2:
-							player_vs_computer_medium();
-							break;
-						case 3:
-							player_vs_computer_imposible();
-							break;
-					}
-				} while (ch2 >= 1 && ch2 <= 3);
-				break;
+		case 1:
+			player_vs_player();
+			break;
+		case 2:
+			do {
+				puts("Enter 1 = Easy");
+				puts("Enter 2 = Medium");
+				puts("Enter 3 = IMPOSIBLE");
+				puts("Enter Other = Back");
+				scanf("%d", &ch2);
+				switch (ch2) {
+				case 1:
+					player_vs_computer_easy();
+					break;
+				case 2:
+					player_vs_computer_medium();
+					break;
+				case 3:
+					player_vs_computer_imposible();
+					break;
+				}
+			} while (ch2 >= 1 && ch2 <= 3);
+			break;
 		}
 	} while (ch == 1 || ch == 2);
 	puts("Good Bye");
 }
-void main(){
+void main() {
 	run();
 	system("pause");
 }
