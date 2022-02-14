@@ -33,7 +33,7 @@ char choose() {
 	int n;
 	puts("Choose X or O ,1 = X , Other = O");
 	scanf("%d", &n);
-	return (n == 1) ? 'X' : "O";
+	return (n == 1) ? 'X' : 'O';
 }
 void player_move(char board[3][3], char player) {
 	int row, col;
