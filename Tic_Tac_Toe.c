@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -34,19 +34,19 @@ char choose() {
 	char str[100];
 	puts("Choose X or O ,1 = X , Other = O");
 	gets(str);
-	return (strlen(str)==1&&str[0]=='1') ? 'X' : 'O';
+	return (strlen(str) == 1 && str[0] == '1') ? 'X' : 'O';
 }
 int repeet_again() {
 	char str[100];
 	printf("Again = 1, Exit = Other: ");
 	gets(str);
-	return strlen(str) == 1 &&str[0]=='1';
+	return strlen(str) == 1 && str[0] == '1';
 }
 void player_move(char board[3][3], char player) {
 	char str[100];
 	printf("Player %c move: ", player);
 	gets(str);
-	while (strlen(str)!=3||!(str[0]>='1'&&str[0]<='3')|| !(str[2] >= '1' && str[2] <= '3') || board[str[0] -'1'][str[2] -'1'] != ' ') {
+	while (strlen(str) != 3 || !(str[0] >= '1' && str[0] <= '3') || !(str[2] >= '1' && str[2] <= '3') || board[str[0] - '1'][str[2] - '1'] != ' ') {
 		printf("Invalid move Player %c move: ", player);
 		gets(str);
 	}
@@ -87,7 +87,7 @@ void player_vs_player() {
 			}
 			count_moves++;
 		}
-		
+
 	} while (repeet_again());
 }
 void computer_move_easy(char board[3][3], char computer) {
@@ -263,6 +263,27 @@ void player_vs_computer_medium() {
 		}
 	} while (repeet_again());
 }
+int count_diagonal_near_player(int diag_row, int diag_col, char player,char board[3][3]) {
+	int i,count=0;
+	for (i = 0;i < 3;i++) {
+		if (board[diag_row][i] == player)
+			count++;
+		if (board[i][diag_col] == player)
+			count++;
+	}
+	return count;
+}
+int index_max_count_near_player(int rows[], int cols[],char player,char board[3][3]) {
+	int i, max = 0, index = -1, max2;
+	for (i = 0;i < 4;i++) {
+		max2 = count_diagonal_near_player(rows[i], cols[i], player, board);
+		if (max2 > max &&board[rows[i]][cols[i]]==' ') {
+			max = max2;
+			index = i;
+		}
+	}
+	return index;
+}
 void computer_move_imposible(char board[3][3], char computer, int* first_move, int* second_move) {
 	int i, r;
 	int rows[] = { 0,1,1,2 };
@@ -287,9 +308,7 @@ void computer_move_imposible(char board[3][3], char computer, int* first_move, i
 				board[rows[i]][cols[i]] = computer;
 			}
 			else {
-				do {
-					i = rand() % 4;
-				} while (board[rows2[i]][cols2[i]] != ' ');
+				i = index_max_count_near_player(rows2, cols2, player, board);
 				board[rows2[i]][cols2[i]] = computer;
 			}
 		}
